@@ -73,6 +73,33 @@ class UserViewSet(viewsets.ViewSet):
         serializer = UserSerializer(admins, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['patch'], url_path='actualizar-mi-perfil')
+    def actualizar_mi_perfil(self, request):
+        """Actualizar datos del usuario autenticado (admin, docente o alumno)"""
+        user = request.user
+
+        # Solo permitir admins en este endpoint si quieres, o todos los roles
+        if not user.groups.filter(name='Administrador').exists():
+            raise PermissionDenied("Solo administradores pueden usar este endpoint.")
+
+        # Campos que se pueden actualizar
+        nombre_completo = request.data.get('nombre_completo')
+        email_secundario = request.data.get('email_secundario')
+
+        if nombre_completo:
+            user.nombre_completo = nombre_completo
+        if email_secundario:
+            user.email_secundario = email_secundario
+
+        # Actualizar foto si se envió archivo
+        if 'photo_profile' in request.FILES:
+            user.photo_profile = request.FILES['photo_profile']
+
+        user.save()
+
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 # ---------------------- AUTENTICACIÓN Y REGISTRO ----------------------
 class AuthViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
