@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 import random
@@ -46,11 +47,11 @@ class Alumno(AbstractBaseUser, PermissionsMixin):
     numero_registro = models.CharField(max_length=6, unique=True, default=generar_registro, editable=False)
 
     # 📸 Imagen de perfil
-    photo_profile = models.ImageField(
-        upload_to=ruta_foto_perfil,
-        blank=True,
+    photo_profile = CloudinaryField(
+        'image',
+        folder="usuarios/alumnos/",
         null=True,
-        default='alumnos_fotos/profile_icon.png'  # Valor por defecto si no sube imagen
+        blank=True
     )
 
     fecha_creacion = models.DateTimeField(auto_now_add=True)

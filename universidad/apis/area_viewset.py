@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions, 
 from universidad.models import Area
 
 class AreaSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = Area
         fields = '__all__'

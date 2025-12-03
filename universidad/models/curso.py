@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from .area import Area
 from .docente import Docente
@@ -10,7 +11,12 @@ class Curso(models.Model):
     docente = models.ForeignKey(Docente, on_delete=models.SET_NULL, null=True, related_name="cursos")
     precio = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     modo_prueba = models.BooleanField(default=True)  # si tiene sección/lectura libre
-    photo_profile = models.ImageField(upload_to='curso_portadas/', blank=True, null=True)  # Nueva foto de portada
+    photo_profile = CloudinaryField(
+        'image',
+        folder="cursos/",
+        null=True,
+        blank=True
+    )
 
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 

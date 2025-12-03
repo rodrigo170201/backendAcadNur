@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from django.contrib.auth import get_user_model
 import random
@@ -11,7 +12,12 @@ class Docente(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="docente_profile", null=False)
     descripcion = models.TextField(blank=True, null=True)
     numero_registro = models.CharField(max_length=6, unique=True, editable=False)
-    photo_profile = models.ImageField(upload_to='docentes_fotos/', blank=True, null=True)  # 🆕 Foto de perfil del docente
+    photo_profile = CloudinaryField(
+        'image',
+        folder="usuarios/docentes/",
+        blank=True,
+        null=True
+    )
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
